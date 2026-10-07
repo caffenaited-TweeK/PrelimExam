@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mossy Meadow Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --sky1:#bfeedd;--sky2:#fff7c9;--hill1:#7fd36b;--hill2:#4fb356;--hill3:#2f8f4a;
+  --bg:#e9f9d9;--card:#fbfff3;--ink:#1f4a2b;--soft:#4f7a58;--leaf:#46b04f;--leaf2:#2e8a3f;
+  --accent:#ff8fa3;--sun:#ffd23f;--water:#5ec8ee;--shadow:#bfe3a3;--fire:0;
+  font-family:'Fredoka','Trebuchet MS',system-ui,sans-serif;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sky1:#16314a;--sky2:#2a3f6b;--hill1:#2e7d45;--hill2:#236a3a;--hill3:#17502c;
+  --bg:#0f2418;--card:#173223;--ink:#e3f7d4;--soft:#9bc7a0;--leaf:#6fd47a;--leaf2:#49b35a;--shadow:#0a1a11;--fire:1;--sun:#f4f1c8}}
+:root[data-theme="dark"]{
+  --sky1:#16314a;--sky2:#2a3f6b;--hill1:#2e7d45;--hill2:#236a3a;--hill3:#17502c;
+  --bg:#0f2418;--card:#173223;--ink:#e3f7d4;--soft:#9bc7a0;--leaf:#6fd47a;--leaf2:#49b35a;--shadow:#0a1a11;--fire:1;--sun:#f4f1c8}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);min-height:100%;overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+
+/* ---------- scene ---------- */
+.scene{position:relative;height:300px;overflow:hidden;background:linear-gradient(var(--sky1),var(--sky2));border-radius:0 0 50% 50%/0 0 36px 36px}
+.sun{position:absolute;top:34px;right:12%;width:76px;height:76px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 12px color-mix(in srgb,var(--sun) 35%,transparent)}
+.sun::before{content:"";position:absolute;inset:-26px;border-radius:50%;border:5px dotted var(--sun);animation:spin 24s linear infinite}
+.sun::after{content:"";position:absolute;left:20px;top:30px;width:8px;height:8px;border-radius:50%;background:#7a5a00;box-shadow:28px 0 #7a5a00;opacity:.8}
+.cloud{position:absolute;width:90px;height:30px;background:#fff;border-radius:30px;opacity:.9;animation:drift linear infinite}
+.cloud::before,.cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud::before{width:42px;height:42px;left:12px;top:-20px}.cloud::after{width:30px;height:30px;left:46px;top:-12px}
+.c1{top:50px;animation-duration:60s;left:-120px}.c2{top:105px;transform:scale(.7);animation-duration:85s;animation-delay:-30s;left:-120px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .cloud{opacity:.18}}
+:root[data-theme="dark"] .cloud{opacity:.18}
+.hill{position:absolute;border-radius:50%;bottom:-120px}
+.h1{width:130%;height:230px;left:-20%;background:var(--hill1)}
+.h2{width:90%;height:210px;right:-25%;background:var(--hill2);bottom:-110px}
+.h3{width:100%;height:170px;left:-10%;background:var(--hill3);bottom:-100px}
+.tree{position:absolute;bottom:62px;width:14px;height:50px;background:#8a5a3b;border-radius:6px;transform-origin:bottom;animation:sway 4s ease-in-out infinite}
+.tree::before{content:"";position:absolute;left:-26px;top:-48px;width:66px;height:66px;border-radius:50%;background:var(--leaf);box-shadow:-14px 20px 0 -6px var(--leaf2),18px 16px 0 -4px var(--leaf2)}
+.tree::after{content:"";position:absolute;left:-6px;top:-30px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:20px 12px var(--accent),-12px 16px var(--accent)}
+.t1{left:9%}.t2{left:24%;transform:scale(.7);animation-delay:-1.5s}.t3{right:30%;transform:scale(.85);animation-delay:-2.5s}
+.hero{position:absolute;left:0;right:0;top:92px;text-align:center;padding:0 16px}
+.hero h1{margin:0;font-size:clamp(30px,6vw,52px);font-weight:700;letter-spacing:.5px;color:#fff;text-shadow:0 3px 0 var(--hill3),0 6px 14px rgba(0,0,0,.18)}
+.hero p{margin:6px 0 0;font-weight:500;color:#fff;text-shadow:0 2px 0 var(--hill3)}
+.fly{position:absolute;width:22px;height:16px;animation:flight 16s ease-in-out infinite}
+.fly::before,.fly::after{content:"";position:absolute;top:0;width:11px;height:15px;background:var(--accent);border-radius:70% 30% 70% 30%;animation:flap .25s ease-in-out infinite alternate;transform-origin:right center}
+.fly::before{left:0}.fly::after{right:0;transform-origin:left center;border-radius:30% 70% 30% 70%;background:#ffb86b}
+.f2{animation-duration:22s;animation-delay:-8s;top:40%}
+.fire{position:absolute;width:8px;height:8px;border-radius:50%;background:#f9f871;box-shadow:0 0 12px 4px #f9f871;opacity:calc(var(--fire)*.9);animation:glow 3s ease-in-out infinite}
+.theme{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));left:14px;border:0;border-radius:99px;background:#ffffffcc;padding:8px 14px;font-weight:600;color:#1f4a2b}
+
+/* ---------- dashboard ---------- */
+main{max-width:1060px;margin:0 auto;padding:26px 16px 50px;display:grid;gap:22px;grid-template-columns:repeat(auto-fit,minmax(270px,1fr))}
+.card{background:var(--card);padding:22px;box-shadow:6px 8px 0 var(--shadow);position:relative;border:3px solid var(--leaf)}
+.card:nth-child(4n+1){border-radius:46px 16px 46px 16px}.card:nth-child(4n+2){border-radius:16px 46px 16px 46px}
+.card:nth-child(4n+3){border-radius:30px 30px 14px 46px}.card:nth-child(4n){border-radius:46px 14px 30px 30px}
+.card h2{margin:0 0 12px;font-size:21px;font-weight:600;display:flex;align-items:center;gap:8px}
+.card h2 span{display:inline-block;animation:bob 3s ease-in-out infinite}
+.wide{grid-column:1/-1}
+.big{font-size:54px;font-weight:700;line-height:1;color:var(--leaf2)}
+.muted{color:var(--soft);margin:6px 0 0}
+.pill{display:inline-block;background:color-mix(in srgb,var(--leaf) 22%,transparent);padding:4px 12px;border-radius:99px;font-weight:500;margin:10px 6px 0 0}
+
+/* sprouts */
+.pots{display:flex;justify-content:space-around;align-items:flex-end;height:150px;margin-bottom:10px}
+.pot{display:flex;flex-direction:column;align-items:center;width:30%}
+.plant{position:relative;height:var(--h,40px);width:8px;background:var(--leaf2);border-radius:6px 6px 0 0;transform-origin:bottom;transition:height .8s cubic-bezier(.3,1.6,.5,1);animation:sway 3.6s ease-in-out infinite}
+.plant::before,.plant::after{content:"";position:absolute;top:2px;width:30px;height:18px;background:var(--leaf);border-radius:80% 0 80% 0}
+.plant::before{right:6px;transform:rotate(-20deg);transform-origin:right bottom}
+.plant::after{left:6px;transform:scaleX(-1) rotate(-20deg);transform-origin:right bottom}
+.plant i{position:absolute;top:-16px;left:-8px;width:24px;height:24px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 5px #fff6,inset 0 0 0 6px var(--sun);opacity:var(--bloom,0);transition:opacity .6s}
+.potbody{width:54px;height:32px;background:#c9774b;border-radius:4px 4px 16px 16px;position:relative}
+.potbody::before{content:"";position:absolute;left:-5px;right:-5px;top:-8px;height:12px;background:#d98a5c;border-radius:8px}
+.meter{width:100%;height:12px;background:color-mix(in srgb,var(--water) 25%,transparent);border-radius:99px;overflow:hidden;margin:8px 0 6px}
+.meter b{display:block;height:100%;width:var(--w,50%);background:var(--water);border-radius:99px;transition:width .6s}
+.btn{border:0;background:var(--leaf);color:#fff;font-weight:600;padding:9px 18px;border-radius:99px;box-shadow:0 4px 0 var(--leaf2);transition:transform .1s}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--leaf2)}
+.drop{position:absolute;font-size:22px;pointer-events:none;animation:rain 1s ease-in forwards}
+
+/* chores */
+.chores{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.chores label{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:16px;background:color-mix(in srgb,var(--leaf) 12%,transparent);cursor:pointer;font-weight:500}
+.chores input{appearance:none;width:26px;height:26px;border-radius:50% 10% 50% 10%;border:3px solid var(--leaf);background:transparent;display:grid;place-items:center;transition:transform .3s;flex:none}
+.chores input:checked{background:var(--leaf);transform:rotate(360deg)}
+.chores input:checked::after{content:"🌿";font-size:14px}
+.chores input:checked+span{text-decoration:line-through;opacity:.6}
+
+/* visitors */
+.vis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;text-align:center}
+.vis div{background:color-mix(in srgb,var(--leaf) 12%,transparent);border-radius:22px;padding:12px 4px}
+.vis em{display:block;font-size:34px;font-style:normal;animation:bob 2.4s ease-in-out infinite}
+.vis div:nth-child(2) em{animation-delay:-.8s}.vis div:nth-child(3) em{animation-delay:-1.6s}
+.vis strong{font-size:26px;display:block}
+.bar{display:flex;align-items:flex-end;gap:8px;height:110px}
+.bar span{flex:1;background:linear-gradient(var(--leaf),var(--leaf2));border-radius:99px 99px 6px 6px;height:var(--v);transform-origin:bottom;animation:grow 1.2s cubic-bezier(.3,1.5,.5,1) backwards}
+.days{display:flex;gap:8px;margin-top:6px;color:var(--soft);font-size:14px}.days span{flex:1;text-align:center}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift{to{transform:translateX(calc(100vw + 260px))}}
+@keyframes sway{0%,100%{rotate:-2.5deg}50%{rotate:2.5deg}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes flap{to{transform:scaleX(.25)}}
+@keyframes flight{0%{left:-5%;top:55%}25%{left:30%;top:30%}50%{left:55%;top:60%}75%{left:80%;top:35%}100%{left:105%;top:50%}}
+@keyframes glow{0%,100%{transform:translateY(0);opacity:calc(var(--fire)*.2)}50%{transform:translateY(-14px);opacity:calc(var(--fire)*.95)}}
+@keyframes rain{from{transform:translateY(-30px);opacity:1}to{transform:translateY(60px);opacity:0}}
+@keyframes grow{from{transform:scaleY(0)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="scene">
+  <button class="theme" id="theme" aria-label="Switch between day and night">🌙 Night</button>
+  <div class="sun"></div>
+  <div class="cloud c1"></div><div class="cloud c2"></div>
+  <div class="hill h1"></div><div class="hill h2"></div>
+  <div class="tree t1"></div><div class="tree t2"></div><div class="tree t3"></div>
+  <div class="hill h3"></div>
+  <div class="fly"></div><div class="fly f2"></div>
+  <div class="fire" style="left:20%;top:60%"></div><div class="fire" style="left:48%;top:70%;animation-delay:-1s"></div>
+  <div class="fire" style="left:72%;top:58%;animation-delay:-2s"></div><div class="fire" style="left:88%;top:72%;animation-delay:-.5s"></div>
+  <div class="hero"><h1>Mossy Meadow</h1><p id="greet">Good morning, gardener!</p></div>
+</header>
+
+<main>
+  <section class="card" aria-labelledby="w">
+    <h2 id="w"><span>☀️</span>Today's sky</h2>
+    <div class="big">24°</div>
+    <p class="muted">Sunny with a few fluffy clouds</p>
+    <span class="pill">💨 Light breeze</span><span class="pill">🌈 Rainbow chance</span>
+  </section>
+
+  <section class="card" aria-labelledby="p">
+    <h2 id="p"><span>🌱</span>Sprout patch</h2>
+    <div class="pots" id="pots"></div>
+    <div class="meter" aria-hidden="true"><b id="wm" style="--w:55%"></b></div>
+    <p class="muted" id="wt">Water tank: 55% full</p>
+    <button class="btn" id="water">Water the sprouts</button>
+  </section>
+
+  <section class="card" aria-labelledby="c">
+    <h2 id="c"><span>🧺</span>Garden chores</h2>
+    <ul class="chores" id="chores">
+      <li><label><input type="checkbox"><span>Pick the ripe tomatoes</span></label></li>
+      <li><label><input type="checkbox" checked><span>Say hi to the snail</span></label></li>
+      <li><label><input type="checkbox"><span>Refill the bird bath</span></label></li>
+      <li><label><input type="checkbox"><span>Prune the rose bush</span></label></li>
+    </ul>
+    <p class="muted" id="cp"></p>
+  </section>
+
+  <section class="card" aria-labelledby="v">
+    <h2 id="v"><span>🦋</span>Visitors today</h2>
+    <div class="vis">
+      <div><em>🐝</em><strong>18</strong>bees</div>
+      <div><em>🦋</em><strong>7</strong>butterflies</div>
+      <div><em>🐞</em><strong>12</strong>ladybugs</div>
+    </div>
+  </section>
+
+  <section class="card wide" aria-labelledby="g">
+    <h2 id="g"><span>🍃</span>New leaves this week</h2>
+    <div class="bar" role="img" aria-label="New leaves per day: 4, 7, 5, 9, 12, 8, 11">
+      <span style="--v:30%"></span><span style="--v:55%;animation-delay:.1s"></span><span style="--v:40%;animation-delay:.2s"></span>
+      <span style="--v:72%;animation-delay:.3s"></span><span style="--v:100%;animation-delay:.4s"></span><span style="--v:65%;animation-delay:.5s"></span><span style="--v:88%;animation-delay:.6s"></span>
+    </div>
+    <div class="days"><span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span></div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var h=new Date().getHours(),g=document.getElementById('greet');
+  g.textContent=(h<12?'Good morning':h<18?'Good afternoon':'Good evening')+', gardener!';
+  var root=document.documentElement,tb=document.getElementById('theme');
+  var dark=matchMedia('(prefers-color-scheme: dark)').matches;
+  function setT(){root.setAttribute('data-theme',dark?'dark':'light');tb.textContent=dark?'☀️ Day':'🌙 Night'}
+  setT();tb.onclick=function(){dark=!dark;setT()};
+
+  var grow=[30,55,20],pots=document.getElementById('pots'),water=55;
+  grow.forEach(function(v,i){
+    pots.insertAdjacentHTML('beforeend','<div class="pot"><div class="plant" id="pl'+i+'" style="animation-delay:-'+i*1.1+'s"><i></i></div><div class="potbody"></div></div>');
+  });
+  function draw(){
+    grow.forEach(function(v,i){var p=document.getElementById('pl'+i);p.style.setProperty('--h',(18+v*1.0)+'px');p.style.setProperty('--bloom',v>=85?1:0)});
+    document.getElementById('wm').style.setProperty('--w',water+'%');
+    document.getElementById('wt').textContent='Water tank: '+water+'% full';
+  }
+  draw();
+  document.getElementById('water').onclick=function(e){
+    if(water<10){document.getElementById('wt').textContent='Tank is empty. Refill it to water again.';return}
+    water-=10;grow=grow.map(function(v){return Math.min(100,v+12)});draw();
+    var card=e.target.closest('.card');
+    for(var i=0;i<6;i++){var d=document.createElement('span');d.className='drop';d.textContent='💧';
+      d.style.left=(15+i*14)+'%';d.style.top='60px';d.style.animationDelay=(i*.08)+'s';card.appendChild(d);
+      setTimeout(function(x){return function(){x.remove()}}(d),1400)}
+  };
+  var boxes=document.querySelectorAll('#chores input'),cp=document.getElementById('cp');
+  function upd(){var n=[].filter.call(boxes,function(b){return b.checked}).length;
+    cp.textContent=n===boxes.length?'All done! The garden is happy.':n+' of '+boxes.length+' chores done'}
+  boxes.forEach(function(b){b.onchange=upd});upd();
+})();
+</script>
+</body>
+</html>
